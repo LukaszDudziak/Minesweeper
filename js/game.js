@@ -1,6 +1,7 @@
 import { Cell } from "./Cell.js";
+import { UI } from "./UI.js";
 
-class Game {
+class Game extends UI {
   //obiekt z danymi do generowania pola gry względem poziomu trudności #-wartość prywatna statyczna
   #config = {
     easy: {
@@ -27,20 +28,30 @@ class Game {
   //   tablica pul
   #cells = [];
 
+  #board = null;
+
   initializeGame() {
+    this.#handleElements();
     this.#newGame();
   }
   //metoda nowej gry z defowymi wartościami
   #newGame(
-    rows = this.#config.easy.rows,
-    cols = this.#config.easy.cols,
-    mines = this.#config.easy.mines
+    rows = this.#config.medium.rows,
+    cols = this.#config.medium.cols,
+    mines = this.#config.medium.mines
   ) {
     this.#numberOfRows = rows;
     this.#numberOfCols = cols;
     this.#numberOfMines = mines;
 
+    this.#setStyles();
+
     this.#generateCells();
+    this.#renderBoard();
+  }
+  //pobieranie elementów
+  #handleElements() {
+    this.#board = this.getElement(this.UiSelectors.board);
   }
   //generator pól
   #generateCells() {
@@ -51,7 +62,24 @@ class Game {
       }
     }
   }
+  #renderBoard() {
+    //flat służy do utworzenia 1-wymiarowej z 2-wymiarowej
+    this.#cells.flat().forEach((cell) => {
+      //insertAdjecent pozwala na umieszczenie nowego elementu DOM w różnych pozycjach względem wywołanego elementu
+      this.#board.insertAdjacentHTML("beforeend", cell.createElement());
+      cell.element = cell.getElement(cell.selector);
+    });
+  }
+
+  #setStyles() {
+    document.documentElement.style.setProperty(
+      "--cells-in-row",
+      this.#numberOfCols
+    );
+  }
 }
+
+//uruchomienie gry w momencie otwarcia okna
 window.onload = function () {
   const game = new Game();
   game.initializeGame();
