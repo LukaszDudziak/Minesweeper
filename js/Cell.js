@@ -19,4 +19,20 @@ export class Cell extends UI {
     const element = `<div class="cell border border--concave" data-cell data-x="${this.x}" data-y="${this.y}"></div>`;
     return element;
   }
+
+  //implementacja odkrywania komórek, poprzez usuwanie klasy
+  revealCell() {
+    this.isReveal = true;
+    this.element.classList.remove("border--concave");
+    this.element.classList.add("border--revealed");
+  }
+  // implementacja flagowania komórki
+  toggleFlag() {
+    this.isFlagged = !this.isFlagged;
+    this.element.classList.toggle("cell--is-flag");
+  }
+
+  addMine() {
+    this.isMine = true;
+  }
 }
